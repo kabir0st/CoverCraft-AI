@@ -1,14 +1,14 @@
 import asyncio
 import json
 import os
-import time
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional, Union
 import threading
+import time
+from dataclasses import dataclass
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
 from dotenv import load_dotenv
+
 from libs.agent import GeneratorAgent
 
 # Load KEY from .env
@@ -83,9 +83,8 @@ class RateLimitedBookGenerator:
         self.last_display_time = 0
 
         print(f"🚦 Rate limiting: {requests_per_minute} requests/minute")
-        print(
-            f"⏱️  Min interval: {self.min_request_interval:.1f}s between requests"
-        )
+        print(f"⏱️  Min interval: {self.min_request_interval:.1f}"
+              f"s between requests")
         print(f"⚙️  Workers: {self.max_workers} (rate-limit optimized)")
 
     async def wait_for_rate_limit(self):
@@ -278,6 +277,18 @@ class RateLimitedBookGenerator:
         print("-" * 70)
 
         all_results = []
+        batch_file = "batch_processed.json"
+
+        # Initialize or load existing batch file
+        try:
+            with open(batch_file, "r", encoding='utf-8') as file:
+                existing_data = json.load(file)
+                print(
+                    f"📂 Found existing {batch_file} with {len(existing_data)} items"
+                )
+        except FileNotFoundError:
+            existing_data = []
+            print(f"📂 Creating new {batch_file}")
 
         # Process in batches
         for i in range(0, len(items), batch_size):
@@ -291,14 +302,25 @@ class RateLimitedBookGenerator:
             batch_results = await self.process_batch_async(batch)
             all_results.extend(batch_results)
 
+            # Save batch results immediately after processing
+            if batch_results:
+                existing_data.extend(batch_results)
+                with open(batch_file, "w", encoding='utf-8') as file:
+                    json.dump(existing_data,
+                              file,
+                              indent=2,
+                              ensure_ascii=False)
+                print(f"💾 Saved batch {batch_num} to {batch_file} "
+                      f"({len(batch_results)} items)")
+
             print(f"\n✅ Batch {batch_num} done: "
                   f"{len(batch_results)} successful")
 
         # Final stats
         print("\n" + "=" * 70)
         self.display_progress(force=True)
-        print(f"\n🎉 Processing complete!")
-        print(f"📊 Final Results:")
+        print("\n🎉 Processing complete!")
+        print("📊 Final Results:")
         print(f"   ✅ Successful: {self.stats.completed}")
         print(f"   ❌ Failed: {self.stats.failed}")
         print(f"   📈 Success Rate: {100 - self.stats.failure_rate:.1f}%")
@@ -348,23 +370,19 @@ async def main():
     try:
         # Load items
         print("📖 Loading items from items.json...")
-        with open("src/items.json", "r", encoding='UTF-8') as file:
+        with open("items.json", "r", encoding='UTF-8') as file:
             items = json.load(file)
-
         print(f"✅ Loaded {len(items)} items")
 
-        # Create rate-limited generator
-        generator = RateLimitedBookGenerator(
-            max_workers=8,  # Conservative for rate limiting
-            requests_per_minute=40)
+        generator = RateLimitedBookGenerator(max_workers=12,
+                                             requests_per_minute=40)
 
         # Process items
-        results = await generator.process_items(items, batch_size=10)
+        results = await generator.process_items(items, batch_size=200)
 
         # Save results
-        await generator.save_results(results,
-                                     "src/items_with_descriptions.json")
-        await generator.save_failed_items("src/failed_items.json")
+        await generator.save_results(results, "items_with_descriptions.json")
+        await generator.save_failed_items("failed_items.json")
 
         print("\n🎊 All done! Check output files for results.")
 

@@ -14,7 +14,7 @@ This project provides multiple ways to generate book descriptions with different
 
 ```bash
 # Quick start
-python src/rate_limited_generator.py
+python src/run_rate_limited.py # Or directly: python src/rate_limited_generator.py
 
 # Command line
 python src/run_rate_limited.py --workers 8 --batch-size 10
@@ -24,7 +24,7 @@ python src/run_rate_limited.py --demo
 ```
 
 ### 2. ⚡ High-Performance Generator (Development/Testing)
-**File**: `src/async_generator.py`
+**File**: [`src/libs/async_generator.py`](src/libs/async_generator.py)
 
 - **Rate Limit**: None (system/API limited)
 - **Workers**: Up to 32 workers
@@ -33,7 +33,7 @@ python src/run_rate_limited.py --demo
 
 ```bash
 # Quick start
-python src/async_generator.py
+python src/run_generator.py # This script uses libs.async_generator
 
 # Command line
 python src/run_generator.py --workers 16 --batch-size 25
@@ -43,7 +43,7 @@ python src/run_generator.py --demo
 ```
 
 ### 3. 📝 Original Simple Generator
-**File**: `src/app.py`
+**File**: `src/app.py` (Note: This might be deprecated or for basic learning only, check project status)
 
 - **Type**: Sequential processing
 - **Use Case**: Understanding the basic workflow
@@ -102,7 +102,8 @@ python src/app.py
 ### Production Processing (Recommended)
 ```bash
 # Process all items with rate limiting
-python src/run_rate_limited.py
+python src/run_generator.py --rate-limited # Assuming run_generator.py handles this, or use direct script
+# python src/run_rate_limited.py (This script might be deprecated)
 
 # Conservative settings
 python src/run_rate_limited.py --workers 6 --batch-size 8
@@ -177,7 +178,7 @@ pip install -r requirements.txt
 ### Verify Setup
 ```bash
 # Test imports
-python -c "import sys; sys.path.append('src'); from rate_limited_generator import RateLimitedBookGenerator; print('✅ Setup OK')"
+python -c "import sys; sys.path.append('src'); from libs.async_generator import AsyncBookDescriptionGenerator; print('✅ Async Setup OK'); from rate_limited_generator import RateLimitedBookGenerator; print('✅ Rate-Limited Setup OK')"
 ```
 
 ## 📈 Processing Time Estimates

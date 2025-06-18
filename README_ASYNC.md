@@ -10,6 +10,7 @@ A high-performance, multi-threaded/async book description generator that utilize
 ❌ **Error Handling**: Comprehensive error tracking with separate failed items logging  
 💾 **Dual Output**: Successful results and failed items saved to separate JSON files  
 🔧 **Configurable**: Adjustable worker counts, batch sizes, and processing modes  
+- **Incremental Batch Saving**: Saves processed data after each batch to `batch_processed.json` for resilience.
 
 ## Installation
 
@@ -32,7 +33,9 @@ Run the async generator with default settings:
 
 ```bash
 cd src
-python async_generator.py
+python run_generator.py # This script uses libs.async_generator.py
+# For direct execution (if needed, usually run_generator.py is preferred):
+# python libs/async_generator.py
 ```
 
 ### Custom Configuration
@@ -41,19 +44,20 @@ Use the run script for custom settings:
 
 ```bash
 cd src
-python run_async.py
+python run_generator.py # This is the primary script for custom async runs
+# The file src/libs/run_async.py might be a specific utility or deprecated.
 ```
 
 ### Advanced Usage
 
 ```python
 import asyncio
-from async_generator import AsyncBookDescriptionGenerator
+from libs.async_generator import AsyncBookDescriptionGenerator
 import json
 
 async def custom_run():
     # Load your items
-    with open("items.json", "r") as f:
+    with open("src/items.json", "r") as f: # Assuming items.json is in src
         items = json.load(f)
     
     # Create generator with custom settings
@@ -70,8 +74,8 @@ async def custom_run():
     )
     
     # Save results
-    await generator.save_results(results, "output.json")
-    await generator.save_failed_items("failed.json")
+    await generator.save_results(results, "src/output.json") # Save in src
+    await generator.save_failed_items("src/failed.json") # Save in src
 
 # Run it
 asyncio.run(custom_run())

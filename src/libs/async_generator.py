@@ -55,13 +55,11 @@ class AsyncBookDescriptionGenerator:
 
     def __init__(self,
                  max_workers: Optional[int] = None,
-                 use_process_pool: bool = False,
                  requests_per_minute: int = 40):
         self.api_key = API_KEY
-        self.requests_per_minute = 40
+        self.requests_per_minute = requests_per_minute
 
         self.max_workers = max_workers or min(32, (os.cpu_count() or 1) + 4)
-        self.use_process_pool = use_process_pool
         self.stats = ProcessingStats()
         self.stats_lock = threading.Lock()
         self.failed_items = []
@@ -281,6 +279,17 @@ class AsyncBookDescriptionGenerator:
         print("-" * 80)
 
         all_results = []
+        batch_file = "batch_processed.json"
+
+        # Initialize or load existing batch file
+        try:
+            with open(batch_file, "r", encoding='utf-8') as file:
+                existing_data = json.load(file)
+                print(f"📂 Found existing {batch_file} with "
+                      f"{len(existing_data)} items")
+        except FileNotFoundError:
+            existing_data = []
+            print(f"📂 Creating new {batch_file}")
 
         # Process items in batches
         for i in range(0, len(items), batch_size):
@@ -297,6 +306,17 @@ class AsyncBookDescriptionGenerator:
                 batch_results = await self.process_batch_async(batch)
 
             all_results.extend(batch_results)
+
+            # Save batch results immediately after processing
+            if batch_results:
+                existing_data.extend(batch_results)
+                with open(batch_file, "w", encoding='utf-8') as file:
+                    json.dump(existing_data,
+                              file,
+                              indent=2,
+                              ensure_ascii=False)
+                print(f"💾 Saved batch {batch_num} to {batch_file} "
+                      f"({len(batch_results)} items)")
 
             # Display batch completion
             print(f"\n✅ Batch {batch_num} completed: "
@@ -374,9 +394,7 @@ async def main():
 
         # Create generator instance
         generator = AsyncBookDescriptionGenerator(
-            max_workers=MAX_WORKERS,
-            use_process_pool=False,
-            requests_per_minute=REQUESTS_PER_MINUTE)
+            max_workers=MAX_WORKERS, requests_per_minute=REQUESTS_PER_MINUTE)
 
         # Process all items
         results = await generator.process_items(items,

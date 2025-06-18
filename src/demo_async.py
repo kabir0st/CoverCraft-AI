@@ -5,7 +5,7 @@ Demo script to test the async book description generator with a small subset
 
 import asyncio
 import json
-import os
+
 from libs.async_generator import AsyncBookDescriptionGenerator
 
 
@@ -30,13 +30,10 @@ async def demo():
         for i, item in enumerate(demo_items, 1):
             print(f"  {i}. {item['name']} (ID: {item['id']})")
 
-        # Create generator with demo settings
-        generator = AsyncBookDescriptionGenerator(
-            max_workers=2,  # Small number for demo
-            use_process_pool=False)
+        generator = AsyncBookDescriptionGenerator(max_workers=2)
 
-        print(f"\n🚀 Starting processing...")
-        print(f"⚙️  Configuration: 2 workers, async mode")
+        print("\n🚀 Starting processing...")
+        print("⚙️  Configuration: 2 workers, async mode")
         print("-" * 50)
 
         # Process items
@@ -52,7 +49,7 @@ async def demo():
         await generator.save_results(results, demo_output)
         await generator.save_failed_items(demo_failed)
 
-        print(f"\n🎉 Demo completed!")
+        print("\n🎉 Demo completed!")
         print(f"📄 Results saved to: {demo_output}")
 
         if generator.failed_items:
@@ -60,7 +57,7 @@ async def demo():
 
         # Show sample results
         if results:
-            print(f"\n📋 Sample result:")
+            print("\n📋 Sample result:")
             sample = results[0]
             print(f"  Title: {sample['name']}")
             print(

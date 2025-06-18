@@ -1,4 +1,4 @@
-# CoverCraft-AI
+# Perplexity Book Description Generator
 
 A high-performance, multi-threaded book description generator that uses the Perplexity API to generate detailed descriptions for books. This project offers multiple processing modes optimized for different use cases, from development testing to production-scale processing.
 
@@ -11,6 +11,7 @@ A high-performance, multi-threaded book description generator that uses the Perp
 - **Comprehensive Error Handling**: Detailed error tracking with separate failed items logging
 - **Flexible Configuration**: Adjustable worker counts, batch sizes, and processing modes
 - **Dual Output System**: Successful results and failed items saved to separate JSON files
+- **Incremental Batch Saving**: Saves processed data after each batch to `batch_processed.json` for resilience.
 
 ## 📋 Quick Start
 
@@ -18,8 +19,8 @@ A high-performance, multi-threaded book description generator that uses the Perp
 
 ```bash
 # Clone the repository
-git clone git@github.com:kabir0st/CoverCraft-AI.git
-cd CoverCraft-AI
+git clone <your-repository-url> # Replace with your actual repository URL
+cd perplexity-book-description-generator
 
 # Install dependencies
 pip install -r requirements.txt
@@ -75,7 +76,7 @@ python src/run_rate_limited.py --workers 8 --batch-size 10
 ```
 
 ### ⚡ High-Performance Generator (Development)
-- **File**: [`src/async_generator.py`](src/async_generator.py)
+- **File**: [`src/libs/async_generator.py`](src/libs/async_generator.py)
 - **Rate Limit**: None (system/API limited)
 - **Workers**: Up to 32 workers
 - **Use Case**: Development, testing, small datasets
@@ -216,23 +217,29 @@ Always backup your original [`items.json`](src/items.json) before processing.
 
 ```
 perplexity-book-description-generator/
-├── README.md                    # This file - main project overview
-├── GENERATOR_OPTIONS.md         # Complete generator comparison guide
-├── USAGE_GUIDE.md              # Detailed usage instructions
-├── RATE_LIMITING_GUIDE.md      # Production-safe rate limiting guide
-├── README_ASYNC.md             # High-performance async guide
-├── requirements.txt            # Python dependencies
-├── pyproject.toml             # Project configuration
-└── src/                       # Source code directory
-    ├── app.py                 # Simple sequential generator
-    ├── async_generator.py     # High-performance async generator
-    ├── rate_limited_generator.py  # Production-safe rate-limited generator
-    ├── run_generator.py       # CLI for async generator
-    ├── run_rate_limited.py    # CLI for rate-limited generator
-    ├── items.json            # Input data file
-    └── libs/                 # Utility libraries
-        ├── agent.py          # Core API interaction
-        └── utils.py          # Helper functions
+├── README.md                     # This file - main project overview
+├── GENERATOR_OPTIONS.md          # Complete generator comparison guide
+├── USAGE_GUIDE.md                # Detailed usage instructions
+├── RATE_LIMITING_GUIDE.md        # Production-safe rate limiting guide
+├── README_ASYNC.md               # High-performance async guide
+├── requirements.txt              # Python dependencies
+├── pyproject.toml                # Project configuration
+└── src/                          # Source code directory
+    ├── rate_limited_generator.py   # Production-safe rate-limited generator
+    ├── run_generator.py          # CLI for async generator
+    ├── run_rate_limited.py       # CLI for rate-limited generator (deprecated, use run_generator.py with options)
+    ├── demo_async.py             # Demo script for async generator
+    ├── items.json                # Input data file
+    ├── system_prompt.txt         # System prompt for the generator
+    └── libs/                     # Core library files
+        ├── __init__.py
+        ├── agent.py              # Core API interaction logic
+        ├── async_app.py          # Async application (if applicable)
+        ├── async_generator.py    # High-performance async generator
+        ├── gen.py                # General generation utilities (if applicable)
+        ├── run_async.py          # Runner for async operations (if applicable)
+        ├── run_rate_limited.py   # Runner for rate-limited operations (if applicable, might be deprecated)
+        └── utils.py              # Helper functions
 ```
 
 ## 📈 Processing Time Estimates

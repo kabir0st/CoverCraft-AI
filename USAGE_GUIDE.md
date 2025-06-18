@@ -7,7 +7,9 @@ This guide shows you how to use the async book description generator in differen
 ### 1. Basic Usage (Recommended)
 ```bash
 cd src
-python async_generator.py
+python run_generator.py # This script uses libs.async_generator.py
+# For direct execution of the async generator (usually run_generator.py is preferred):
+# python libs/async_generator.py
 ```
 This runs with default settings optimized for most systems.
 
@@ -65,12 +67,12 @@ python run_generator.py --demo --workers 2
 ### Basic Usage
 ```python
 import asyncio
-from async_generator import AsyncBookDescriptionGenerator
+from libs.async_generator import AsyncBookDescriptionGenerator
 import json
 
 async def process_books():
     # Load items
-    with open("items.json", "r") as f:
+    with open("src/items.json", "r") as f: # Assuming items.json is in src
         items = json.load(f)
     
     # Create generator
@@ -80,8 +82,8 @@ async def process_books():
     results = await generator.process_items(items)
     
     # Save
-    await generator.save_results(results)
-    await generator.save_failed_items()
+    await generator.save_results(results, "src/items_with_descriptions.json") # Save in src
+    await generator.save_failed_items("src/failed_items.json") # Save in src
 
 asyncio.run(process_books())
 ```
@@ -89,12 +91,12 @@ asyncio.run(process_books())
 ### Advanced Configuration
 ```python
 import asyncio
-from async_generator import AsyncBookDescriptionGenerator
+from libs.async_generator import AsyncBookDescriptionGenerator
 import json
 
 async def advanced_processing():
     # Load items
-    with open("items.json", "r") as f:
+    with open("src/items.json", "r") as f: # Assuming items.json is in src
         items = json.load(f)
     
     # Create generator with custom settings
@@ -111,8 +113,8 @@ async def advanced_processing():
     )
     
     # Save with custom filenames
-    await generator.save_results(results, "my_results.json")
-    await generator.save_failed_items("my_failures.json")
+    await generator.save_results(results, "src/my_results.json") # Save in src
+    await generator.save_failed_items("src/my_failures.json") # Save in src
     
     # Print statistics
     print(f"Processed: {generator.stats.completed}")
@@ -183,7 +185,8 @@ The generator shows real-time progress:
 ## Output Files
 
 ### Successful Results
-File: `items_with_descriptions.json` (or custom name)
+File: `items_with_descriptions.json` (or custom name).
+Additionally, `batch_processed.json` will be created/updated in the `src` directory, containing all successfully processed items saved incrementally after each batch.
 
 ```json
 [
@@ -198,7 +201,7 @@ File: `items_with_descriptions.json` (or custom name)
 ```
 
 ### Failed Items
-File: `failed_items.json` (or custom name)
+File: `failed_items.json` (or custom name in `src` directory)
 
 ```json
 [
@@ -245,11 +248,11 @@ Solution: Create .env file with KEY=your_api_key
 ```python
 import asyncio
 import json
-from async_generator import AsyncBookDescriptionGenerator
+from libs.async_generator import AsyncBookDescriptionGenerator
 
 async def retry_failed():
     # Load failed items
-    with open("failed_items.json", "r") as f:
+    with open("src/failed_items.json", "r") as f: # Assuming failed_items.json is in src
         failed_items = json.load(f)
     
     # Remove error fields to retry
@@ -264,7 +267,7 @@ async def retry_failed():
     results = await generator.process_items(retry_items, batch_size=5)
     
     # Save retry results
-    await generator.save_results(results, "retry_results.json")
+    await generator.save_results(results, "src/retry_results.json") # Save in src
 
 asyncio.run(retry_failed())
 ```
@@ -299,7 +302,7 @@ python run_generator.py --workers 16 --batch-size 20
 The generator handles Ctrl+C gracefully and saves progress.
 
 ### 5. Backup Important Data
-Always backup your original `items.json` before processing.
+Always backup your original `src/items.json` before processing.
 
 ## Troubleshooting
 
@@ -323,7 +326,7 @@ print(f"Recommended workers: {min(32, os.cpu_count() * 2)}")
 import json
 from collections import Counter
 
-with open("failed_items.json", "r") as f:
+with open("src/failed_items.json", "r") as f: # Assuming failed_items.json is in src
     failed = json.load(f)
 
 # Count error types

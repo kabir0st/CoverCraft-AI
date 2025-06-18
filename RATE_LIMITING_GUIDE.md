@@ -15,7 +15,9 @@ A specialized version of the async book description generator that respects API 
 ### Basic Usage
 ```bash
 cd src
-python rate_limited_generator.py
+python run_rate_limited.py # Or directly: python src/rate_limited_generator.py
+# Note: src/run_rate_limited.py might be deprecated.
+# Consider using src/run_generator.py with rate-limiting flags if available.
 ```
 
 ### Command Line Interface
@@ -39,7 +41,7 @@ Options:
   -w, --workers N      Number of workers (default: 8, max recommended: 10)
   -b, --batch-size N   Batch size (default: 10)
   -d, --demo           Demo mode with 5 items
-  -i, --input FILE     Input file (default: items.json)
+  -i, --input FILE     Input file (default: src/items.json)
 ```
 
 ## Examples
@@ -175,12 +177,13 @@ The generator includes multiple layers of protection:
 ### Basic Usage
 ```python
 import asyncio
-from rate_limited_generator import RateLimitedBookGenerator
+from src.rate_limited_generator import RateLimitedBookGenerator # Assuming direct import if run from project root
+# Or adjust based on how scripts in src/libs might call this
 import json
 
 async def process_with_rate_limit():
     # Load items
-    with open("items.json", "r") as f:
+    with open("src/items.json", "r") as f: # Assuming items.json is in src
         items = json.load(f)
     
     # Create rate-limited generator
@@ -193,8 +196,8 @@ async def process_with_rate_limit():
     results = await generator.process_items(items, batch_size=10)
     
     # Save results
-    await generator.save_results(results)
-    await generator.save_failed_items()
+    await generator.save_results(results, "src/items_with_descriptions.json") # Save in src
+    await generator.save_failed_items("src/failed_items.json") # Save in src
 
 asyncio.run(process_with_rate_limit())
 ```
@@ -202,7 +205,7 @@ asyncio.run(process_with_rate_limit())
 ### Advanced Configuration
 ```python
 import asyncio
-from rate_limited_generator import RateLimitedBookGenerator
+from src.rate_limited_generator import RateLimitedBookGenerator # Assuming direct import
 
 async def advanced_rate_limited():
     # Custom rate limiting
@@ -212,7 +215,7 @@ async def advanced_rate_limited():
     )
     
     # Load and process
-    with open("items.json", "r") as f:
+    with open("src/items.json", "r") as f: # Assuming items.json is in src
         items = json.load(f)
     
     results = await generator.process_items(
@@ -221,8 +224,8 @@ async def advanced_rate_limited():
     )
     
     # Custom output files
-    await generator.save_results(results, "rate_limited_results.json")
-    await generator.save_failed_items("rate_limited_failures.json")
+    await generator.save_results(results, "src/rate_limited_results.json") # Save in src
+    await generator.save_failed_items("src/rate_limited_failures.json") # Save in src
     
     # Print final statistics
     print(f"Final rate: {len(generator.request_times)} requests in last minute")
@@ -296,7 +299,9 @@ Rate limiting means slower processing:
 The generator handles Ctrl+C gracefully and saves progress.
 
 ### 5. Backup Data
-Always backup your `items.json` before processing.
+Always backup your `src/items.json` before processing.
+Additionally, note that `batch_processed.json` will be created/updated in the `src` directory,
+containing all successfully processed items saved incrementally after each batch.
 
 ## Comparison: Rate-Limited vs Regular
 
