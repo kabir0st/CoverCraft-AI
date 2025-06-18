@@ -19,10 +19,11 @@ class GeneratorAgent:
         self.api_key = api_key
         with open('system_prompt.txt', 'r', encoding='utf-8') as file:
             system_prompt = file.read()
+        base_url = "https://openrouter.ai/api/v1"
+        print(self.api_key)
         self.model = OpenAIModel(
-            "sonar-pro",
-            provider=OpenAIProvider(base_url="https://api.perplexity.ai",
-                                    api_key=self.api_key),
+            "google/gemini-2.5-flash",
+            provider=OpenAIProvider(base_url=base_url, api_key=self.api_key),
         )
 
         # Initialize the agent

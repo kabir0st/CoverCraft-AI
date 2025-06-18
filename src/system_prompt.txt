@@ -19,15 +19,13 @@ on clarity, reader interest, and usefulness for BooksMandala.com customers.
 5. Length: aim for ~150–300 words.
 
 Output format:
-- Start with the book title.
-- Then write the full SEO-optimized description in 1-3 paragraphs.
+- write the full SEO-optimized description in 1-3 paragraphs.
 
 Example Input:
 ISBN: 9781250864872
 Title: Fourth Wing
 
 Example Output:
-Fourth Wing
 Enter the brutal and exhilarating world of Basgiath War College in Fourth Wing, a gripping fantasy novel by
 Rebecca Yarros. As 20-year-old Violet Sorrengail is unexpectedly thrust into the elite world of dragon riders, she
 must navigate dangerous trials, political intrigue, and ruthless competition—all while discovering her own hidden

@@ -283,9 +283,8 @@ class RateLimitedBookGenerator:
         try:
             with open(batch_file, "r", encoding='utf-8') as file:
                 existing_data = json.load(file)
-                print(
-                    f"📂 Found existing {batch_file} with {len(existing_data)} items"
-                )
+                print(f"📂 Found existing {batch_file} "
+                      f"with {len(existing_data)} items")
         except FileNotFoundError:
             existing_data = []
             print(f"📂 Creating new {batch_file}")
