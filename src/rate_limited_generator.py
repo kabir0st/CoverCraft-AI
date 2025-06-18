@@ -103,7 +103,7 @@ class RateLimitedBookGenerator:
                 oldest_request = self.request_times[0]
                 wait_time = oldest_request + 60 - current_time + 0.5  # Buffer
                 if wait_time > 0:
-                    print(f"\n🚦 Rate limit: waiting {wait_time:.1f}s...")
+                    # print(f"\n🚦 Rate limit: waiting {wait_time:.1f}s...")
                     await asyncio.sleep(wait_time)
                     current_time = time.time()
 
@@ -278,7 +278,7 @@ class RateLimitedBookGenerator:
 
         all_results = []
         batch_file = "batch_processed.json"
-
+        existing_data = []
         # Initialize or load existing batch file
         try:
             with open(batch_file, "r", encoding='utf-8') as file:
@@ -286,11 +286,13 @@ class RateLimitedBookGenerator:
                 print(f"📂 Found existing {batch_file} "
                       f"with {len(existing_data)} items")
         except FileNotFoundError:
-            existing_data = []
             print(f"📂 Creating new {batch_file}")
+        print(f"Starting from : {len(existing_data)}")
+        all_results = existing_data
 
         # Process in batches
-        for i in range(0, len(items), batch_size):
+        for i in range(len(existing_data),
+                       len(items) - len(existing_data), batch_size):
             batch = items[i:i + batch_size]
             batch_num = (i // batch_size) + 1
             total_batches = (len(items) + batch_size - 1) // batch_size
@@ -377,7 +379,7 @@ async def main():
                                              requests_per_minute=40)
 
         # Process items
-        results = await generator.process_items(items, batch_size=200)
+        results = await generator.process_items(items, batch_size=60)
 
         # Save results
         await generator.save_results(results, "items_with_descriptions.json")
