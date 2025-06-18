@@ -166,7 +166,7 @@ python src/run_generator.py --workers 32 --batch-size 50
 ## 🔧 Environment Setup
 
 ### Required Files
-1. `.env` file with `KEY=your_perplexity_api_key`
+1. `.env` file with `KEY=your_open_router_api_key`
 2. `src/items.json` with your book data
 3. Python dependencies installed
 

@@ -22,7 +22,7 @@ pip install -r requirements.txt
 2. Set up your environment variables:
 ```bash
 # Create a .env file with your API key
-echo "KEY=your_perplexity_api_key_here" > .env
+echo "KEY=your_open_router_api_key_here" > .env
 ```
 
 ## Usage
@@ -273,8 +273,8 @@ Example output:
 - 4+ GB RAM (8+ GB recommended)
 - Multi-core CPU (4+ cores recommended)
 - Stable internet connection
-- Valid Perplexity API key
+- Valid Open Router API key
 
 ## License
 
-This project is part of the Perplexity Book Description Generator suite.
+This project is part of the Open Router Book Description Generator suite.

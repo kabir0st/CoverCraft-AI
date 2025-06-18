@@ -1,6 +1,6 @@
-# Perplexity Book Description Generator
+# CoverCraft-AI
 
-A high-performance, multi-threaded book description generator that uses the Perplexity API to generate detailed descriptions for books. This project offers multiple processing modes optimized for different use cases, from development testing to production-scale processing.
+A high-performance, multi-threaded book description generator that uses the Open router API to generate detailed descriptions for books. This project offers multiple processing modes optimized for different use cases, from development testing to production-scale processing.
 
 ## 🚀 Features
 
@@ -19,19 +19,19 @@ A high-performance, multi-threaded book description generator that uses the Perp
 
 ```bash
 # Clone the repository
-git clone <your-repository-url> # Replace with your actual repository URL
-cd perplexity-book-description-generator
+git clone git@github.com:kabir0st/CoverCraft-AI.git
+cd CoverCraft-AI
 
 # Install dependencies
-pip install -r requirements.txt
+uv sync
 ```
 
 ### 2. Environment Setup
 
-Create a `.env` file with your Perplexity API key:
+Create a `.env` file with your Open Router API key:
 
 ```bash
-echo "KEY=your_perplexity_api_key_here" > .env
+echo "KEY=your_open_router_api_key_here" > .env
 ```
 
 ### 3. Prepare Your Data
@@ -216,7 +216,7 @@ Always backup your original [`items.json`](src/items.json) before processing.
 ## 🔍 Project Structure
 
 ```
-perplexity-book-description-generator/
+CoverCraft-AI/
 ├── README.md                     # This file - main project overview
 ├── GENERATOR_OPTIONS.md          # Complete generator comparison guide
 ├── USAGE_GUIDE.md                # Detailed usage instructions
@@ -271,7 +271,7 @@ perplexity-book-description-generator/
 - 4+ GB RAM (8+ GB recommended)
 - Multi-core CPU (4+ cores recommended)
 - Stable internet connection
-- Valid Perplexity API key
+- Valid Open Router API key
 
 ## 📖 Getting Help
 

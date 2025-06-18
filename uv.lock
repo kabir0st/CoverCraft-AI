@@ -612,7 +612,7 @@ wheels = [
 ]
 
 [[package]]
-name = "perplexity-book-description-generator"
+name = "open-router-book-description-generator"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
