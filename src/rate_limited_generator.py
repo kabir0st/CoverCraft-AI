@@ -375,7 +375,7 @@ async def main():
             items = json.load(file)
         print(f"✅ Loaded {len(items)} items")
 
-        generator = RateLimitedBookGenerator(max_workers=12,
+        generator = RateLimitedBookGenerator(max_workers=2,
                                              requests_per_minute=40)
 
         # Process items
